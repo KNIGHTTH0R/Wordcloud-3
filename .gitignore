@@ -1,0 +1,5 @@
+*.pyc
+*.txt
+Examples/
+.DS_Store
+._*

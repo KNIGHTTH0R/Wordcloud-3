@@ -17,3 +17,4 @@ class Parser(object):
 		sortedDict = sorted(parsedDocument.iteritems(), key=operator.itemgetter(1), reverse = True)
 
 		return sortedDict
+		
