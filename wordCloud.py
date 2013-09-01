@@ -9,7 +9,7 @@ if __name__ == '__main__':
 	helpMessages = {}
 	helpMessages["verbose"] 			= "Produce verbose output."
 	helpMessages["wordCountOut"] 		= "Outputs word count as its own txt document."
-	helpMessages["fileName"]			= "For inputting name of the file to be parsed."
+	helpMessages["fileName"]			= "Name of file to be parsed into a wordcloud."
 
 	parser.add_argument('-v', action = "store_true",	dest = "verbose",	default = False, 	help = helpMessages["verbose"])
 	parser.add_argument('-w', action = "store_false", 	dest = "wordCountOut", 		default = False,	help = helpMessages["wordCountOut"])
