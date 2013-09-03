@@ -9,10 +9,16 @@ class Parser(object):
 		self.documentName = documentName
 		self.verbose = verbose
 
-		fileName, fileExtension = os.path.splitext(documentName)
+		# List of all words pulled from the document, minus those in blacklist.txt
+		self.parsedListBlacklist = []
+		# List of all words pulled from the document
+		self.parsedList = []
 
+		# Pull out the file extension and lower it to check what sort of file we've been given.
+		fileName, fileExtension = os.path.splitext(documentName)
 		fileExtension = fileExtension.lower()
 
+		# Send the file to different functions based upon which file we have.
 		if(fileExtension == '.txt'):
 			if self.verbose:
 				print documentName, "is a .txt file."
@@ -26,24 +32,159 @@ class Parser(object):
 			exit(1)
 
 	def parseTextDocument(self, documentName):
-		parsedDocument = {}
-		with open(documentName,'r') as f:
-			for line in f:
-				for word in line.split():
-					if word in parsedDocument:
-						parsedDocument[word] += 1
-					else:
-						parsedDocument[word] = 1
-		if self.verbose == True:
-			print "Parsing complete."
+		'''
+		Takes in a filepath to a .txt document and creates two lists, parsedList and parsedListBlacklist.
+		parsedList contains all the words from the document and the count of how many times they appeared.
+		parsedListBlacklisted is the same list, minus any that appear in blacklist.txt
 
-		sortedDict = sorted(parsedDocument.iteritems(), key=operator.itemgetter(1), reverse = True)
+		These lists are accessed via getParsedWords and getParsedWordsBlacklisted.
+		'''
 
-		return sortedDict
+		parsedList = {}
+		parsedListBlacklisted = {}
+
+		# Pull out each word and add it to the appropriate dicts
+		try:
+			with open(documentName, 'r') as f:
+				for line in f:
+					for word in line.split():
+						cleanedWord = self.cleanedWord(word)
+
+						if not self.inBlacklist(cleanedWord):
+							parsedListBlacklisted = self.addWordToDict(cleanedWord, parsedListBlacklisted)
+
+						parsedList = self.addWordToDict(cleanedWord, parsedList)
+
+			if self.verbose == True:
+				print "Parsing complete."
+
+			# Convert un-ordered dicts into sorted lists.
+			self.parsedList = self.dictToSortedList(parsedList)
+			self.parsedListBlacklisted = self.dictToSortedList(parsedListBlacklisted)
+
+		except IOError:
+			print "File does not exist, exiting program."
+			exit(1)
 
 	def parsePDFDocument(self, documentName):
+		'''
+		Takes in a filepath to a .pdf document and creates two lists, parsedList and parsedListBlacklist.
+		parsedList contains all the words from the document and the count of how many times they appeared.
+		parsedListBlacklisted is the same list, minus any that appear in blacklist.txt
+
+		These lists are accessed via getParsedWords and getParsedWordsBlacklisted.
+		'''
+
 		print "Sorry, pdf parsing isn't implemented yet."
 		exit(0)
 
-	def getParsedWords(self):
-		return self.parsedWords
+	def cleanedWord(self, word):
+		'''
+		Cleans a word. Puts it to lowercase, strips whitespace and other unwanted characters, including citations from wikipedia.
+		'''
+
+		cleanedWord = word.lower()
+
+		cleanedWord = cleanedWord.rstrip()
+
+		return cleanedWord
+
+	def inBlacklist(self, word):
+		'''
+		Returns True if a word is in blacklist.txt, False otherwise.
+		'''
+		try:
+			with open('blacklist.txt', 'r') as blacklist:
+				for line in blacklist:
+					if self.cleanedWord(line) == word:
+						return True
+				else:
+					return False
+		except IOError:
+			return False
+
+	def addWordToDict(self, word, parsedDict):
+		'''
+		Adds word to parsedDict if it does not already appear, otherwise increases key by 1.
+		'''
+
+		if word in parsedDict:
+			parsedDict[word] += 1
+		else:
+			parsedDict[word] = 1
+
+		return parsedDict
+
+	def dictToSortedList(self, parsedDict, reverse = True):
+		'''
+		Converts a dict to a sorted List.
+		reverse determines whether it is ascending or descending.
+		'''
+
+		sortedList = sorted(parsedDict.iteritems(), key = operator.itemgetter(1), reverse = reverse)
+
+		return sortedList
+
+	def getParsedList(self):
+		'''
+		Returns list of parsed words, un-blacklisted.
+		'''
+
+		if self.verbose:
+			print "Non-blacklisted words requested."
+
+		return self.parsedList
+
+	def getParsedListBlacklisted(self):
+		'''
+		Returns list of parsed words, sans words found in blacklist.txt
+		'''
+		
+		if self.verbose:
+			print "Blacklisted words requested."
+
+		return self.parsedListBlacklisted
+
+	def logWordCountList(self, blacklisted = True):
+		'''
+		Outputs the words and their counts from the file being parsed to a .txt file.
+		File is put in a directory called wordCountLogs that is created if it doesn't already exist.
+		'''
+
+		logFileName = self.createLogFileName(blacklisted)
+
+		wordList = self.getParsedListBlacklisted() if blacklisted else self.getParsedList()
+
+		if self.verbose:
+			print "Creating ", logFileName, " with word count list."
+
+		try:
+			os.remove(logFileName)
+			if self.verbose:
+				print logFileName, " already exists.\n Deleting ", logFileName
+		except OSError:
+			pass
+
+		if not os.path.exists('wordCountLogs'):
+			os.makedirs('wordCountLogs')
+
+		try:
+			with open(logFileName, 'wr') as logFile:
+				for word, count in wordList:
+					logFile.write(word + " " + str(count) + '\n')
+		except IOError:
+			print "Failed to create word count log."
+
+	def createLogFileName(self, blacklisted):
+		'''
+		Creates log file name for use with logList()
+		'''
+
+		fileNamePlusExtension = os.path.basename(self.documentName)
+		fileName, fileExtension = os.path.splitext(fileNamePlusExtension)
+
+		logNameExtension = 'BlacklistedParsed.txt' if blacklisted else 'Parsed.txt'
+
+		logFileName = 'wordCountLogs/' + fileName + logNameExtension
+
+		return logFileName
