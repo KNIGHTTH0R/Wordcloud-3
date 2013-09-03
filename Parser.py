@@ -1,7 +1,6 @@
 import operator
 import os
 import sys
-import time
 
 class Parser(object):
 
@@ -125,35 +124,57 @@ class Parser(object):
 
 		return sortedList
 
-	def getParsedList(self):
+	def getParsedList(self, minimumCount = False, blacklist = False):
 		'''
-		Returns list of parsed words, un-blacklisted.
+		Returns list of parsed words. Can apply a blacklist, a minimum requirement on a word's count, or just
+		return the entire unfiltered list.
 		'''
 
-		if self.verbose:
-			print "Non-blacklisted words requested."
+		if not minimumCount:
+			minimumCount = 0
 
-		return self.parsedList
+		filteredList = self.parsedList
 
-	def getParsedListBlacklisted(self):
+		if blacklist:
+			filteredList = self.applyBlacklist(filteredList)
+		
+		filteredList = self.applyMinimumCount(filteredList, minimumCount)
+
+		return filteredList
+
+	def applyBlacklist(self, listToClean):
 		'''
-		Returns list of parsed words, sans words found in blacklist.txt
+		Returns listToClean, sans words in blacklist.txt
 		'''
 		
-		if self.verbose:
-			print "Blacklisted words requested."
+		newList = []
 
-		return self.parsedListBlacklisted
+		for word in listToClean:
+			if not self.inBlacklist(word[0]):
+				newList.append(word)
 
-	def logWordCountList(self, blacklisted = True):
+		return newList
+
+	def applyMinimumCount(self, listToClean, minimumCount):
+		'''
+		Returns listToClean, sans any words with a count under minimumCount.
+		'''
+
+		newList = []
+
+		for word in listToClean:
+			if word[1] >= minimumCount:
+				newList.append(word)
+
+		return newList
+
+	def logWordCountList(self, wordList):
 		'''
 		Outputs the words and their counts from the file being parsed to a .txt file.
 		File is put in a directory called wordCountLogs that is created if it doesn't already exist.
 		'''
 
-		logFileName = self.createLogFileName(blacklisted)
-
-		wordList = self.getParsedListBlacklisted() if blacklisted else self.getParsedList()
+		logFileName = self.createLogFileName()
 
 		if self.verbose:
 			print "Creating ", logFileName, " with word count list."
@@ -175,7 +196,7 @@ class Parser(object):
 		except IOError:
 			print "Failed to create word count log."
 
-	def createLogFileName(self, blacklisted):
+	def createLogFileName(self):
 		'''
 		Creates log file name for use with logList()
 		'''
@@ -183,7 +204,7 @@ class Parser(object):
 		fileNamePlusExtension = os.path.basename(self.documentName)
 		fileName, fileExtension = os.path.splitext(fileNamePlusExtension)
 
-		logNameExtension = 'BlacklistedParsed.txt' if blacklisted else 'Parsed.txt'
+		logNameExtension = 'Parsed.txt'
 
 		logFileName = 'wordCountLogs/' + fileName + logNameExtension
 

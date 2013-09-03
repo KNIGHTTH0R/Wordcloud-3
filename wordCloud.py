@@ -18,13 +18,14 @@ if __name__ == '__main__':
 
 	settings = parser.parse_args()
 
-	parser = Parser(settings.fileName, settings.verbose)
+	minimumCount = 3
 
-	parsedWords = parser.getParsedList() if settings.blacklisting else parser.getParsedListBlacklisted()
+	parser = Parser(settings.fileName, settings.verbose, minimumCount)
 
-	if settings.wordCountOut:
-		parser.logWordCountList(settings.blacklisting)
+	parsedList = parser.getParsedList(minimumCount = 3, blacklist = True)
 
-	for word, count in parsedWords:
+	parser.logWordCountList(parsedList)
+
+	for word, count in parsedList:
 		exit(0)
 		print word, count
