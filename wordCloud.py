@@ -18,11 +18,11 @@ if __name__ == '__main__':
 
 	settings = parser.parse_args()
 
-	minimumCount = 3
+	minimumCount = 0
 
-	parser = Parser(settings.fileName, settings.verbose, minimumCount)
+	parser = Parser(settings.fileName, settings.verbose)
 
-	parsedList = parser.getParsedList(minimumCount = 3, blacklist = True)
+	parsedList = parser.getParsedList(minimumCount = minimumCount, blacklist = settings.blacklisting)
 
 	parser.logWordCountList(parsedList)
 

@@ -8,9 +8,6 @@ class Parser(object):
 		self.documentName = documentName
 		self.verbose = verbose
 
-		# List of all words pulled from the document, minus those in blacklist.txt
-		self.parsedListBlacklist = []
-		# List of all words pulled from the document
 		self.parsedList = []
 
 		# Pull out the file extension and lower it to check what sort of file we've been given.
@@ -200,7 +197,7 @@ class Parser(object):
 		'''
 		Creates log file name for use with logList()
 		'''
-
+		
 		fileNamePlusExtension = os.path.basename(self.documentName)
 		fileName, fileExtension = os.path.splitext(fileNamePlusExtension)
 
