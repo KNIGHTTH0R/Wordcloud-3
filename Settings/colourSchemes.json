@@ -1,0 +1,25 @@
+{
+	"blackandwhite":{
+						"background"  : [255, 255, 255],
+						"wordColours" : [
+											[0, 0, 0]
+										]
+					},
+	"scheme1"		:{
+						"background"  :	[50, 50, 50],
+						"wordColours" :	[
+											[255, 44, 0],
+											[255, 182, 0],
+											[255, 133, 0]
+										]
+					},
+	"scheme2"		:{
+						"background"  :	[50,50,50],
+						"wordColours" : [
+											[8,111,161],
+											[74,17,174],
+											[100,41,176]
+										]
+					}
+
+}

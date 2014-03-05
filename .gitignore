@@ -3,4 +3,6 @@ log.txt
 Examples/
 .DS_Store
 ._*
-wordCountLogs/
+wordcloud.old
+input/*
+output/*
