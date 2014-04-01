@@ -117,4 +117,9 @@ class WordCloudGenerator(object):
 			return 2
 
 	def getWordSize(self, wordNumber):
-		return int(math.floor(50 - (wordNumber * 0.75)))
+		fontsize = int(math.floor(50 - (wordNumber * wordNumber)/10))
+
+		if fontSize < 15:
+			fontSize = 15
+
+		return fontsize

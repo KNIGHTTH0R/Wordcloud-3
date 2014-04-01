@@ -23,9 +23,6 @@ class Drawer (object):
 	# Print message to co-ordinates xPixel, yPixel.
 	# Font size is also a parameter but if nothing is sent it defaults to 32.
 	def createTextRects(self, message, fontSize = 32):
-		if fontSize < 10:
-			fontSize = 10
-
 		if fontSize in self.fontObjects:
 			fontObj = self.fontObjects[fontSize]
 		else:
