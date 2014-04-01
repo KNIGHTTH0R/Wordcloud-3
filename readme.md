@@ -21,3 +21,14 @@ maxWords in config.ini is the maximum amount of words to appear in the wordcloud
 
 minimumCount is the minimum (not inclusive) amount of times a word must appear in the document to appear in a wordcloud.
 If minimumCount is 0 any words that appear are candidates for appearing in the wordcloud.
+
+Dependencies
+============
+
+python 2.7
+
+pygame 1.91
+http://pygame.org/download.shtml\
+
+pdfminer
+http://www.unixuser.org/~euske/python/pdfminer/#download
