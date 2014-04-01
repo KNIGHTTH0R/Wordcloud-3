@@ -53,7 +53,7 @@ class ParsedDocument(object):
 	def applyBlacklist(self, blacklist):
 		for blackListedWord in blacklist:
 			for word in self.wordList:
-				if word[0] == blackListedWord:
+				if word[0] == blackListedWord or len(word[0]) == 1:
 					self.removeWordFromWordList(word)
 
 	def applyMinimumCountFilter(self, minimumCount):
