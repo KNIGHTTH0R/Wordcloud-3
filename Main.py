@@ -4,6 +4,7 @@ import WordCloudGenerator
 import os
 import ObjectLogger
 import sys
+from ConfigParser import SafeConfigParser
 
 class Main (object):
 
@@ -20,12 +21,15 @@ class Main (object):
 			self.logger.log("Output folder created")
 			os.makedirs("output")
 
+		self.parser = parser = SafeConfigParser()
+		parser.read('settings/config.ini')
+
 		self.settings = {}
 
-		self.settings["verbose"] = True
-		self.settings["blacklisting"] = False
-		self.settings["maxWords"] = 50
-		self.settings["minimumCount"] = 0
+		self.settings["verbose"] = bool(parser.get('Config', 'verbose'))
+		self.settings["blacklisting"] = bool(parser.get('Config', 'blacklisting'))
+		self.settings["maxWords"] = int(parser.get('Config', 'maxWords'))
+		self.settings["minimumCount"] = int(parser.get('Config', 'minimumCount'))
 
 		self.blacklist = self.loadBlacklist()
 
@@ -63,7 +67,7 @@ class Main (object):
 
 			self.logger.log("Generating filepath for wordcloud output file")
 			fileName, fileExtension = os.path.splitext(os.path.basename(filepath))
-			imageOutputPath = "output/" + fileName + ".png"
+			imageOutputPath = "output/" + fileName + ".bmp"
 
 			self.logger.log("Sending parsed document to WordCloudGenerator for wordcloud generation")
 			wordCloudGenerator.generateWordCloud(parsedDocument, imageOutputPath)
