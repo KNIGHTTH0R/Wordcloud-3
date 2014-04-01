@@ -28,7 +28,7 @@ Dependencies
 python 2.7
 
 pygame 1.91
-http://pygame.org/download.shtml\
+http://pygame.org/download.shtml
 
 pdfminer
 http://www.unixuser.org/~euske/python/pdfminer/#download
