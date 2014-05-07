@@ -57,6 +57,7 @@ class WordCloudGenerator(object):
 			pygame.display.update()
 
 	def placeWord(self, word, wordNumber):
+
 		if wordNumber == 0:
 			return self.placeInitialWord(word, wordNumber)
 
@@ -66,20 +67,22 @@ class WordCloudGenerator(object):
 
 		validLocation = self.validTextRectLocation(textRectObj)
 
+		distanceToJump = 10
+
 		while validLocation:
 			if validLocation == 2:
 				textRectObj.center = random.choice(self.wordRectList).center
 
 			if bool(random.getrandbits(1)):
 				if bool(random.getrandbits(1)):
-					textRectObj.left += 10
+					textRectObj.left += distanceToJump
 				else:
-					textRectObj.left -= 10
+					textRectObj.left -= distanceToJump
 			else:
 				if bool(random.getrandbits(1)):
-					textRectObj.top += 10
+					textRectObj.top += distanceToJump
 				else:
-					textRectObj.top -= 10
+					textRectObj.top -= distanceToJump
 
 			validLocation = self.validTextRectLocation(textRectObj)
 

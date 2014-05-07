@@ -46,10 +46,6 @@ class ParsedDocument(object):
 			self.logger.log("Applying limit on words that can appear in wordList")
 			self.applyMaxWordsLimit(maxWordsLimit)
 
-	def removeWordListFilters(self):
-		self.logger.log("Removing filters from wordList")
-		self.refreshWordList()
-
 	def applyBlacklist(self, blacklist):
 		for blackListedWord in blacklist:
 			for word in self.wordList:
