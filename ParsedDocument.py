@@ -19,9 +19,7 @@ class ParsedDocument(object):
 		else:
 			self.wordDict[word] = 1
 
-		self.refreshWordList()
-
-	def refreshWordList(self):
+	def sortList(self):
 		self.wordList = sorted(self.wordDict.iteritems(), key = operator.itemgetter(1), reverse = True)
 
 	def removeWordFromWordList(self, word):

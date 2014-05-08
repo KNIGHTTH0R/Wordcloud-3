@@ -55,6 +55,8 @@ class Parser(object):
 			self.logger.log("Error, %s not found." % documentName)
 			return False
 
+		parsedDocument.sortList()
+
 		return parsedDocument
 
 	def parsePDFDocument(self, documentName):
