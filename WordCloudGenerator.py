@@ -64,6 +64,12 @@ class WordCloudGenerator(object):
 		textSurfaceObj, textRectObj = self.drawer.createTextRects(word[0], self.getWordSize(wordNumber))
 
 		textRectObj.center = random.choice(self.wordRectList).center
+		
+		# Old system of choosing initial location for word. Resulted in multiple little word cloud
+		# spread around, commented out rather than deleted for posterity.
+		#rand_bottom = random.randint(textRectObj.height, self.drawer.DISPLAYSURF.get_height())
+		#rand_right = random.randint(textRectObj.width, self.drawer.DISPLAYSURF.get_width())
+		#textRectObj.center = (rand_bottom, rand_right)
 
 		validLocation = self.validTextRectLocation(textRectObj)
 
