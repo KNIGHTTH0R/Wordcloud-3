@@ -62,35 +62,35 @@ class Parser(object):
 
 		tempFilepath = "tmp.txt"
 
-		rsrcmgr = PDFResourceManager()
+		# PDFMiner code adapted from several online sources,
+		# as well as official documentation.
+		# Links now unavailable.
+		manager = PDFResourceManager()
 		retstr = StringIO()
-		codec = 'utf-8'
-		laparams = LAParams()
-		device = TextConverter(rsrcmgr, 
-								retstr, 
-								codec=codec, 
-								laparams=laparams)
+		textConverter = TextConverter(	manager, 
+										retstr, 
+										codec = 'utf-8', 
+										laparams = LAParams())
 
-		fp = file(documentName, 'rb')
-		interpreter = PDFPageInterpreter(rsrcmgr, device)
-		password = ""
-		maxpages = 0
-		caching = True
-		pagenos = set()
-		pages = PDFPage.get_pages(fp, 
-									pagenos, 
-									maxpages = maxpages, 
-									password = password, 
-									caching = caching, 
+		document = file(documentName, 'rb')
+		interpreter = PDFPageInterpreter(manager, textConverter)
+		pagenums = set()
+		pages = PDFPage.get_pages(	document, 
+									pagenums, 
+									maxpages = 0, 
+									password = '', 
+									caching = True, 
 									check_extractable = True)
 
 		for page in pages:
 		    interpreter.process_page(page)
 
-		fp.close()
-		device.close()
+		document.close()
+		textConverter.close()
 		pdfText = retstr.getvalue()
 		retstr.close()
+
+		# End of PDFMiner code
 
 		with open(tempFilepath, "w") as tmp:
 			tmp.write(pdfText)
