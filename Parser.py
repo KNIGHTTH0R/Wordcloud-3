@@ -62,44 +62,52 @@ class Parser(object):
 
 		tempFilepath = "tmp.txt"
 
-		# PDFMiner code adapted from several online sources,
-		# as well as official documentation.
-		# Links now unavailable.
-		manager = PDFResourceManager()
-		retstr = StringIO()
-		textConverter = TextConverter(	manager, 
-										retstr, 
-										codec = 'utf-8', 
-										laparams = LAParams())
+		try:
+			# PDFMiner code adapted from several online sources,
+			# as well as official documentation.
+			# Links now unavailable.
+			manager = PDFResourceManager()
+			retstr = StringIO()
+			textConverter = TextConverter(	manager, 
+											retstr, 
+											codec = 'utf-8', 
+											laparams = LAParams())
 
-		document = file(documentName, 'rb')
-		interpreter = PDFPageInterpreter(manager, textConverter)
-		pagenums = set()
-		pages = PDFPage.get_pages(	document, 
-									pagenums, 
-									maxpages = 0, 
-									password = '', 
-									caching = True, 
-									check_extractable = True)
+			document = file(documentName, 'rb')
+			interpreter = PDFPageInterpreter(manager, textConverter)
+			pagenums = set()
+			pages = PDFPage.get_pages(	document, 
+										pagenums, 
+										maxpages = 0, 
+										password = '', 
+										caching = True, 
+										check_extractable = True)
 
-		for page in pages:
-		    interpreter.process_page(page)
+			for page in pages:
+			    interpreter.process_page(page)
 
-		document.close()
-		textConverter.close()
-		pdfText = retstr.getvalue()
-		retstr.close()
+			document.close()
+			textConverter.close()
+			pdfText = retstr.getvalue()
+			retstr.close()
 
-		# End of PDFMiner code
+			# End of PDFMiner code
 
-		with open(tempFilepath, "w") as tmp:
-			tmp.write(pdfText)
+			with open(tempFilepath, "w") as tmp:
+				tmp.write(pdfText)
 
-		parsedDocument = self.parseTextDocument(tempFilepath)
+			parsedDocument = self.parseTextDocument(tempFilepath)
 
-		os.remove(tempFilepath)
+			os.remove(tempFilepath)
 
-		return parsedDocument
+			return parsedDocument
+
+		except:
+			try:
+				os.remove(tempFilepath)
+			except OSError:
+				pass
+			return False
 
 	def cleanWord(self, word):
 		cleanedWord = word.lower()
